@@ -4,54 +4,64 @@
 from howlongtobeatpy import HowLongToBeat #https://pypi.org/project/howlongtobeatpy/
 from openpyxl import load_workbook #https://ehmatthes.github.io/pcc_2e/beyond_pcc/extracting_from_excel/
 
-class HLTBSteam():
-    file = "C:/Users/Nathan/Documents/PySteamTimer/SteamGames.xlsx"
-    wb = load_workbook(file)
-    ws = wb["run_results"]
+file = "C:/Users/Nathan/Documents/PySteamTimer/SteamGames.xlsx"
+wb = load_workbook(file)
+ws = wb["run_results"] #raw input in main?
+rows = list(ws.rows)
 
-    
-    #returns list of steam games from excel file
-    def getGames(): 
-        rows = list(ws.rows)
-        i = 0
-        gameList = []
-        #game count, make this dynamic later
-        for i in range(0,734):
-            for j in rows[i]:
-                gameList.append(j.value)
-        return gameList
+#make this dynamic later
+gameCount = 717
 
-    #takes in list of games, returns list of times for the games
-    def getTimes(games):
-        timeList = []
-        for i in games:
-            timeList += completion_time(searchforGame(games[i]))
-        return timeList
+#takes in JSON, returns completion time as int
+def completion_time(game):
+    if game is not None:
+        type(game)
+        return game.main_story
+    else:
+        return 0
+        #return ((game.main_story + game.main_extra) // 2)
+
+#returns list of steam games from excel file
+def getGames(): 
+    gameList = []
+    for i in range(0,gameCount):
+        for j in rows[i]:
+            gameList.append(j.value)
+    return gameList
+
+#takes in list of games, returns list of times for the games
+def getTimes(games):
+    timeList = []
+    for i in range(0,gameCount):
+        gameSearch = searchforGame(games[i])
+        #print(gameSearch)
+        timeList.append(completion_time(gameSearch))
+    return timeList
         
 
-    #returns a JSON result to be interpreted
-    def searchforGame(name): 
-        results = HowLongToBeat().search(name, similarity_case_sensitive=False)
-        if results is not None and len(results) > 0:
-            best_element = max(results, key=lambda element: element.similarity)
-            return best_element
-        else:
-            print("Not found.")
-            return None
+#takes in a string, returns a JSON result to be interpreted
+def searchforGame(name): 
+    results = HowLongToBeat().search(name, similarity_case_sensitive=False)
+    if results is not None and len(results) > 0:
+        best_element = max(results, key=lambda element: element.similarity)
+        print(name, "found")
+        return best_element
+    else:
+        print(name, "NOT FOUND")
 
-    #takes in JSON, returns name of game as string
-    def getName(game):
-        return game.game_name
+#takes in JSON, returns name of game as string
+def getName(game):
+    return game.game_name
 
     
-    #takes in JSON, returns completion time as int
-    def completion_time(game):
-        return game.main_story
-        #return ((game.main_story + game.main_extra) // 2)
+
+
+class HLTBSteam():
 
     def main():
         gameList = getGames()
-        print(getTimes(gameList))
+        gameTimes = getTimes(gameList)
+        print(gameTimes)
             
     if __name__ == "__main__":
         main()
@@ -60,56 +70,3 @@ class HLTBSteam():
     
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def scratch():
-    rows = list(ws.rows)
-    i = 0
-    j = 0
-    gameList = []
-    while True:
-        for j in rows[i]:
-            if i.value == "":
-                return gameList
-            gameList.append(i.value)
-        i+=1
-    return gameList
-
-
-    rows = list(ws.rows)
-    i = 0
-    gameList = []
-    while i < 734:
-        for j in rows[i]:
-            gameList.append(j.value)
-        i+=1
-    return gameList
