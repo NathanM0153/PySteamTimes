@@ -1,44 +1,54 @@
 #modules needed: aiohttp, requests, fake_useragent, openpyxl, xlwt, steamfront
-#scrape games via ParseHub
 
-import steamfront #https://steamfront.readthedocs.io/en/latest/code-reference.html
+
+import steamfront
+#https://steamfront.readthedocs.io/en/latest/code-reference.html
+#https://github.com/4Kaylum/Steamfront
+from howlongtobeatpy import HowLongToBeat
+#https://pypi.org/project/howlongtobeatpy/
+
 import xlwt
-from xlwt import Workbook #https://www.geeksforgeeks.org/writing-excel-sheet-using-python/
-from howlongtobeatpy import HowLongToBeat #https://pypi.org/project/howlongtobeatpy/
-from openpyxl import load_workbook #https://ehmatthes.github.io/pcc_2e/beyond_pcc/extracting_from_excel/
-
-file = "C:/Users/Nathan/Documents/PySteamTimer/SteamGames.xlsx"
-wb = load_workbook(file)
-ws = wb["run_results"] #raw input in main?
-rows = list(ws.rows)
-gameCount = ws.max_row
-
-
-steamClient = steamfront.Client()
+from xlwt import Workbook
+#https://www.geeksforgeeks.org/writing-excel-sheet-using-python/
+from openpyxl import load_workbook
+#https://ehmatthes.github.io/pcc_2e/beyond_pcc/extracting_from_excel/
 
 
 
 
+steamID64 = "76561198272854176"
+steamAPIKey = "6D5F599D289CCFC212F5D824F212CCB4"
+steamClient = steamfront.Client(steamAPIKey)
 
+
+def appIDList(games):
+    IDList = []
+    for i in range(0,len(games)):
+        IDList.append(games[i].appid)
+        #print(games[i].appid)
+    #print(IDList)
+    return IDList
+
+def gameNameList(IDList):
+    games = []
+    app = ""
+    for i in IDList:
+        app = steamClient.getApp(appid=i)
+        games.append(app.name)
+        #print(str(i))
+    print(games)
+    return games
+    
 
 #takes in JSON, returns completion time as int
 def completion_time(game):
     if game is not None:
-        type(game)
-        return game.main_story
+        time = (game.main_story + game.main_extra) // 2
+        return time
     else:
         return 0
-        #return ((game.main_story + game.main_extra) // 2)
     
 
-#returns list of steam games from excel file
-def getGames(): 
-    gameList = []
-    for i in range(0,gameCount):
-        #try:
-        for j in rows[i]:
-            gameList.append(j.value)
-    return gameList
 
 #takes in list of games, returns list of times for the games
 def getTimes(games):
@@ -74,13 +84,13 @@ def getName(game):
 class HLTBSteam():
 
     def main():
-        gameList = getGames()
-        gameTimes = getTimes(gameList)
-        for i in range(0,gameCount):
-            print(gameList[i], end=": ")
-            print(gameTimes[i], "hours")
-        exportToSheet(gameTimes)
-            
+        user = steamClient.getUser(id64=steamID64)
+        games = user.apps
+        idlist = appIDList(games)
+        gamelist = gameNameList(idlist)
+        print(gamelist)
+        return 0
+    
     if __name__ == "__main__":
         main()
 
