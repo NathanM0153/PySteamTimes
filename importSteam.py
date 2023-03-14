@@ -17,32 +17,42 @@ steamID64 = "76561198272854176"
 steamAPIKey = "6D5F599D289CCFC212F5D824F212CCB4"
 steamClient = steamfront.Client(steamAPIKey)
 
+
 def appIDList(games):
     IDList = []
     for i in range(0,len(games)):
         IDList.append(games[i].appid)
         #print(games[i].appid)
-    #print(IDList)
     return IDList
 
 def gameNameList(IDList):
     games = []
-    app = ""
     for i in IDList:
-        app = steamClient.getApp(appid=i)
-        games.append(app.name)
-        #print(str(i))
-    print(games)
+        try:
+            #print(i)
+            game = steamClient.getApp(appid=i)
+            name = game.name
+            print(name)
+            games.append(name)
+        except:
+            print("ID not found. App ID is", i)
+            continue
     return games
 
+#https://github.com/ValvePython/steam
 
 class importSteam():
 
     def main():
+        #test()
         user = steamClient.getUser(id64=steamID64)
-        games = user.apps
-        idlist = appIDList(games)
+        #print(user.name)
+        games = user.apps #list of <steamfront.userapp.UserApp object at 0x00000XXXXXXXXX>
+        print(games)
+        idlist = appIDList(games) #steam IDs in mostly(?) ascending numerical order
+        #print(idlist)
         gamelist = gameNameList(idlist)
+        #it seems like this errors with too large of lists. split this up into multiple?
         print(gamelist)
         return 0
     
