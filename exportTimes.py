@@ -10,8 +10,19 @@ from openpyxl import load_workbook
 # https://ehmatthes.github.io/pcc_2e/beyond_pcc/extracting_from_excel/
 
 filePath = "C:/Users/Nathan/Documents/PySteamTimer/SteamGames.xlsx"
-wb = load_workbook(filePath)
-ws = wb["run_results"] #raw input in main?
+try:
+    wb = load_workbook(filePath)
+    ws = wb["run_results"] #raw input in main?
+except:
+    print("A problem occurred. Here's how to fix it:")
+    print("Open Excel, go to File -> Open -> Browse.")
+    print("Single-click on SteamGames.xlsx, and navigate down to the Open button on the bottom right.")
+    print("Click the down arrow next to Open, click Open and Repair, Extract Data, Convert to Values.")
+    print("FInally, go back to File -> Save As, and save the file as SteamGames.xlsx.")
+    print("You may have to change the drop down below the file name from .xls to .xlsx.")
+    print("After that, you can rerun this script.")
+    quit(0)
+
 gameCount = ws.max_row
 
 # takes in JSON, returns completion time as int
@@ -44,6 +55,7 @@ def exportToSheet(times):
         ws.cell(row=i + 1, column=2).value = times[i]
         # ws.write(i,1,times[i])
     wb.save('SteamGameTimes_Finished.xlsx')
+    print("Exported to file successfully.")
 
 # takes in a string, returns a JSON result to be interpreted
 def searchforGame(name):
@@ -54,8 +66,8 @@ def searchforGame(name):
         print(name, "found")
         return best_element
     else:
-        print(name,
-              "NOT found. Check the name listed in your spreadsheet and ensure it does not include extraneous info such as Definitive Edition.")
+        print(name,  "NOT found. Check the name listed in your spreadsheet and ensure it does not include extraneous info such as Definitive Edition.")
+        return None
 
 # takes in JSON, returns name of game as string
 def getName(game):
