@@ -9,8 +9,8 @@ from xlwt import Workbook
 from openpyxl import load_workbook
 # https://ehmatthes.github.io/pcc_2e/beyond_pcc/extracting_from_excel/
 
-file = "C:/Users/Nathan/Documents/PySteamTimer/SteamGames.xlsx"
-wb = load_workbook(file)
+filePath = "C:/Users/Nathan/Documents/PySteamTimer/SteamGames.xlsx"
+wb = load_workbook(filePath)
 ws = wb["run_results"] #raw input in main?
 gameCount = ws.max_row
 
