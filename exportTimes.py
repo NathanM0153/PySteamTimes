@@ -1,38 +1,30 @@
-# modules needed: aiohttp, requests, fake_useragent, openpyxl, xlwt, steamfront
+# modules needed: aiohttp, requests, fake_useragent, openpyxl, xlrd, xlwt, steamfront
 
 from howlongtobeatpy import HowLongToBeat
-# https://pypi.org/project/howlongtobeatpy/
-
 import xlwt
 from xlwt import Workbook
-# https://www.geeksforgeeks.org/writing-excel-sheet-using-python/
+import openpyxl
 from openpyxl import load_workbook
-# https://ehmatthes.github.io/pcc_2e/beyond_pcc/extracting_from_excel/
+
 
 filePath = "C:/Users/Nathan/Documents/PySteamTimer/SteamGames.xlsx"
 try:
     wb = load_workbook(filePath)
-    ws = wb["run_results"] #raw input in main?
-except:
-    print("A problem occurred. Here's how to fix it:")
-    print("Open Excel, go to File -> Open -> Browse.")
-    print("Single-click on SteamGames.xlsx, and navigate down to the Open button on the bottom right.")
-    print("Click the down arrow next to Open, click Open and Repair, Extract Data, Convert to Values.")
-    print("FInally, go back to File -> Save As, and save the file as SteamGames.xlsx.")
-    print("You may have to change the drop down below the file name from .xls to .xlsx.")
-    print("After that, you can rerun this script.")
-    quit(0)
-
-gameCount = ws.max_row
+    ws = wb.active #raw input in main?
+    gameCount = ws.max_row
+except Exception as e:
+    print("A problem occurred:", e)
+    print("Please check the README.txt file for assistance.")
 
 # takes in JSON, returns completion time as int
 def completion_time(game):
     if game is not None:
-        time = (game.main_story + game.main_extra) // 2
+        time = round((game.main_story + game.main_extra) / 2, 2)
         return time
     else:
-        return 0
+        return "Not found in HLTB database."
 
+# pulls games from the excel sheet, puts in a list
 def getGames(): 
     gameList = []
     rows = list(ws.rows)
@@ -52,10 +44,12 @@ def getTimes(games):
 
 def exportToSheet(times):
     for i in range(0, len(times)):
-        ws.cell(row=i + 1, column=2).value = times[i]
+        ws_cell = ws.cell(row=i + 1, column=2)
+        ws_cell.value = times[i]
         # ws.write(i,1,times[i])
     wb.save('SteamGameTimes_Finished.xlsx')
     print("Exported to file successfully.")
+    print("Refer to the README.txt in order to complete results.")
 
 # takes in a string, returns a JSON result to be interpreted
 def searchforGame(name):
@@ -63,10 +57,12 @@ def searchforGame(name):
     best_element = ""
     if results is not None and len(results) > 0:
         best_element = max(results, key=lambda element: element.similarity)
-        print(name, "found")
+        print(name, "found") 
+        #count += 1
+        #maybe someday put a number here
         return best_element
     else:
-        print(name,  "NOT found. Check the name listed in your spreadsheet and ensure it does not include extraneous info such as Definitive Edition.")
+        print(name,  "NOT found. Check the README file for reasons this may be.")
         return None
 
 # takes in JSON, returns name of game as string
@@ -77,6 +73,7 @@ class HLTBSteam():
     def main():
         gameList = getGames()
         timeList = getTimes(gameList)
+        count = 1
         for i in range(0,gameCount):
             print(gameList[i], end=": ")
             print(timeList[i], "hours")
