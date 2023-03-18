@@ -1,16 +1,29 @@
-# modules needed: aiohttp, requests, fake_useragent, openpyxl, xlrd, xlwt, steamfront
+# modules needed: aiohttp, requests, fake_useragent, openpyxl, xlwt, steamfront
 
 from howlongtobeatpy import HowLongToBeat
+#credit: https://github.com/ScrappyCocco/HowLongToBeat-PythonAPI
+
 import xlwt
 from xlwt import Workbook
 import openpyxl
 from openpyxl import load_workbook
 
 
-filePath = "C:/Users/Nathan/Documents/PySteamTimer/SteamGames.xlsx"
+#filePath = "C:/Users/Nathan/Documents/PySteamTimer/SteamGames.xlsx"
+
 try:
-    wb = load_workbook(filePath)
-    ws = wb.active #raw input in main?
+    wb = load_workbook("SteamGames.xlsx")
+    ws = wb["Games"]
+    #ws = wb.active
+    #wsList = wb.sheetnames
+    #print("These are the sheets in your excel file:")
+    #for i in wsList:
+    #    print(i, end=" ")
+    #sheet = input("\nChoose the sheet you would like to query: ")
+    #print(sheet)
+    #if sheet == "":
+    #    ws = wb["Games"]
+    #ws = wb[sheet]
     gameCount = ws.max_row
 except Exception as e:
     print("A problem occurred:", e)
@@ -76,7 +89,11 @@ class HLTBSteam():
         count = 1
         for i in range(0,gameCount):
             print(gameList[i], end=": ")
-            print(timeList[i], "hours")
+            time = timeList[i]
+            if time == "Not found in HLTB database.":
+                print(time)
+            else:
+                print(time, "hours")
         exportToSheet(timeList)
         return 0
 

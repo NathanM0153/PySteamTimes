@@ -1,19 +1,18 @@
 import time
 import steamfront
-#https://steamfront.readthedocs.io/en/latest/code-reference.html
+#credit: https://github.com/4Kaylum/Steamfront
 import xlwt
-import xlrd
 from xlwt import Workbook
-#https://www.geeksforgeeks.org/writing-excel-sheet-using-python/
 from openpyxl import load_workbook
 from openpyxl import Workbook
-#https://ehmatthes.github.io/pcc_2e/beyond_pcc/extracting_from_excel/
 
-filePath = "C:/Users/Nathan/Documents/PySteamTimer/"
-steamID64 = "76561198272854176"
-steamAPIKey = "6D5F599D289CCFC212F5D824F212CCB4"
+
+#steamID64 = "76561198272854176"
+#steamAPIKey = "6D5F599D289CCFC212F5D824F212CCB4"
+steamID64 = input("Enter your Steam ID64 key. This is the number at the end of your profile URL.\n")
+steamAPIKey = input("Enter your Steam API Key. After registering, you can find yours at this link: \nhttps://steamcommunity.com/dev/apikey\n")
 steamClient = steamfront.Client(steamAPIKey)
-waitTime = 1.5
+waitTime = 1.25 #rate limit on steamfront api requests
 
 
 def appIDList(games):
@@ -27,6 +26,7 @@ def gameNameList(IDList):
     games = []
     errors = []
     count = 1
+    
     #check if game is free? exclude?
     for i in IDList:
         try:
@@ -38,58 +38,57 @@ def gameNameList(IDList):
             print("ID not found. App ID is", i)
             errors.append(i)
             continue
-        time.sleep(waitTime) #rate limit on api requests
+        time.sleep(waitTime)
         #would it be faster to go full speed until error then wait for longer?
         count += 1
     print("Game IDs not found:")
     print(errors)
     print("You can find them at https://steamcommunity.com/app/######, inserting the relevant ID.")
-    print("For complete accuracy, please add them to the bottom of the spreadsheet SteamGames.xlsx.")
+    print("Most of these will be game accessories or discontinued games, but there is a possibility the script missed a game so check if you would like.")
     return games
 
-def doctorOutput(gameList):
-    fixedList = []
-    bracketbool = False
-    
-    for i in gameList:
-        i = i.replace("™","")
-        i = i.replace("®","")
-        i = i.replace(";"," ")
-        #i = i.replace(":","")
-        i = i.replace("- ", "")
-        i = i.replace("– ", "")
-        
-        #string = ""
-        #for j in i:
-        #    if j == '(':
-        #        bracketbool = True
-        #        #turns off adding to string
-        #    elif j == ')':
-        #        bracketbool = False
-        #        #turns on adding to string
-        #    elif not bracketbool:
-        #        string += j
-        
-        if i[-1] == ":":
-            i = i[:-1] #cuts off if there is one
-        
-        #find a way to remove anything in parentheses
-        fixedList.append(i)
-    return fixedList
-
 def exportToExcel(gameList):
-    file = "C:\\Users\\Nathan\\Documents\\PySteamTimer\\SteamGames.xlsx"
+    file = "SteamGames.xlsx"
     wb = Workbook()
-    wb.save(file)
-    gameSheet = wb.active #grab the active worksheet
-    #gameSheet = wb.add_sheet("run_results")
+    #wb.save(file)
+    gameList.sort()
+    gameSheet = wb.create_sheet("Games")
+    wb.remove("Sheet")
     for i in range(0,len(gameList)):
         gameSheet.cell(row=i+1, column=1, value=gameList[i])
-    #sort??
     wb.save(file)
     print("File successfully saved.")
     wb.close()
     
+
+def doctorOutput(gameList):
+    fixedList = []
+    bracketbool = False
+    string = ""
+    for i in gameList:
+        i = i.replace("™","")
+        i = i.replace("®","")
+        i = i.replace(";"," ")
+        i = i.replace("- ", "")
+        i = i.replace("– ", "")
+        
+        string = ""
+        for j in i: #removes everything in parentheses
+            if j == '(':
+                bracketbool = True
+                #turns off adding to string
+            elif j == ')':
+                bracketbool = False
+                #turns on adding to string
+            elif not bracketbool:
+                string += j
+        i = string
+        
+        if i[-1] == " ":
+            i = i[:-1] #cuts off if there is one
+            
+        fixedList.append(i)
+    return fixedList
 
 
 class importSteam():
@@ -98,7 +97,7 @@ class importSteam():
         user = steamClient.getUser(id64=steamID64)
         games = user.apps #list of <steamfront.userapp.UserApp object at 0x00000XXXXXXXXX>
         IDList = appIDList(games)
-        time = round(len(IDList) * waitTime / 60 + (len(IDList)/60/2.5), 1)
+        time = round(len(IDList) * waitTime / 60 + (len(IDList)/60/2.5), 1) #roughly 2.5 queries/second at max speed
         print("This process is expected to take roughly", time, "minutes.")
         gameList = gameNameList(IDList)
         doctoredList = doctorOutput(gameList)
