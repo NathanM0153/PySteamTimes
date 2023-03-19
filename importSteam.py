@@ -50,10 +50,10 @@ def gameNameList(IDList):
 def exportToExcel(gameList):
     file = "SteamGames.xlsx"
     wb = Workbook()
-    #wb.save(file)
+    wb.save(file)
     gameList.sort()
-    gameSheet = wb.create_sheet("Games")
-    wb.remove("Sheet")
+    gameSheet = wb.active
+    #wb.remove("Sheet")
     for i in range(0,len(gameList)):
         gameSheet.cell(row=i+1, column=1, value=gameList[i])
     wb.save(file)

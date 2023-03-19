@@ -13,7 +13,7 @@ from openpyxl import load_workbook
 
 try:
     wb = load_workbook("SteamGames.xlsx")
-    ws = wb["Games"]
+    ws = wb["Sheet"]
     #ws = wb.active
     #wsList = wb.sheetnames
     #print("These are the sheets in your excel file:")
