@@ -1,14 +1,11 @@
 import time
 import steamfront
 #credit: https://github.com/4Kaylum/Steamfront
-import xlwt
-from xlwt import Workbook
+
 from openpyxl import load_workbook
 from openpyxl import Workbook
 
 
-#steamID64 = "76561198272854176"
-#steamAPIKey = "6D5F599D289CCFC212F5D824F212CCB4"
 steamID64 = input("Enter your Steam ID64 key. This is the number at the end of your profile URL.\n")
 steamAPIKey = input("Enter your Steam API Key. After registering, you can find yours at this link: \nhttps://steamcommunity.com/dev/apikey\n")
 steamClient = steamfront.Client(steamAPIKey)
@@ -27,20 +24,21 @@ def gameNameList(IDList):
     errors = []
     count = 1
     
-    #check if game is free? exclude?
     for i in IDList:
         try:
             game = steamClient.getApp(appid=i)
             name = game.name
-            print(count, "  ", name)
-            games.append(name)
+            if not game.is_free: #exclude free games
+                print(count, "  ", name)
+                count += 1
+                games.append(name)
         except:
             print("ID not found. App ID is", i)
             errors.append(i)
             continue
         time.sleep(waitTime)
         #would it be faster to go full speed until error then wait for longer?
-        count += 1
+
     print("Game IDs not found:")
     print(errors)
     print("You can find them at https://steamcommunity.com/app/######, inserting the relevant ID.")
@@ -50,10 +48,10 @@ def gameNameList(IDList):
 def exportToExcel(gameList):
     file = "SteamGames.xlsx"
     wb = Workbook()
-    #wb.save(file)
+    wb.save(file)
     gameList.sort()
-    gameSheet = wb.create_sheet("Games")
-    wb.remove("Sheet")
+    gameSheet = wb.active
+    #wb.remove("Sheet")
     for i in range(0,len(gameList)):
         gameSheet.cell(row=i+1, column=1, value=gameList[i])
     wb.save(file)

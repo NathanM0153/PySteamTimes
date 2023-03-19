@@ -3,12 +3,11 @@ Libraries needed:
 - requests
 - fake_useragent
 - openpyxl
-- xlwt
 - steamfront
 - howlongtobeatpy
 
 Install these in Windows Powershell using the command:
-pip install [name of library]
+python -m pip install [name of library]
 
 
 HOW TO RUN:
@@ -28,7 +27,7 @@ python importSteam.py
 This program will take several minutes to complete.
 
 After completing the steps specified by the program, run this command:
-python exportTimes.py
+python exportHLTB.py
 
 
 
@@ -39,7 +38,7 @@ OPTION 2:
 
 This program will take several minutes to complete.
 
-After completing the steps specified by the program, open exportTimes.py and run it.
+After completing the steps specified by the program, open exportHLTB.py and run it.
 
 
 
@@ -49,25 +48,30 @@ TROUBLESHOOTING
 
 The Steam app ID was not found.
 
-- Honestly 99% of the time this happens (to roughly 1% of my library) it's still unexplained.
-If it's just a few, go to the links specified and find the games. If it's many more, contact me
-and I'll figure something out. This program is probably in continual WIP anyway.
+- 99% of the time this happens it's due to a game either being no longer purchaseable or being an 
+accessory to another game, like a Friend's Pass. If you want to be absolutely sure, go to the links 
+specified and find the games. If it's many more than 1 or 2% of your library, contact me and I'll 
+figure something out. This program is probably in continual WIP anyway.
+
+
+Many Steam App IDs in a row are not found.
+
+- You ran into a problem with Steam's request rate limit. Wait for 3-5 minutes and re-run the script.
 
 
 The game was not found on HowLongToBeat.
 
 - Most likely, the game name isn't exactly what it should be. If the program searches for "[Game] Definitive Edition" 
 it won't find "[Game]". This is an unfortunate quirk of HLTB's own search API. You will need to go into Excel and edit
-the name of the game if the cell in column B specifies it was not found in HLTB's database. If the hours are set to 0,
-HLTB correctly found the game, but simply does not have data on it.
+the name of the game if the cell in column B specifies it was not found in HLTB's database. It is also possible that
+HLTB does not have any record of the game whatsoever. If the hours are set to 0, HLTB correctly found the game in its
+database, but simply does not have any data on it.
 
-
-Other reasons these may occur:
+Other reasons this may occur:
 
 - The name is in another language
 - The program is searching for non-game software such as Borderless Gaming
 - Your internet is having problems
-- You may be having rate limits
 
 ---
 

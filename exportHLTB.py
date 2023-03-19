@@ -1,10 +1,7 @@
-# modules needed: aiohttp, requests, fake_useragent, openpyxl, xlwt, steamfront
-
 from howlongtobeatpy import HowLongToBeat
 #credit: https://github.com/ScrappyCocco/HowLongToBeat-PythonAPI
 
-import xlwt
-from xlwt import Workbook
+import os
 import openpyxl
 from openpyxl import load_workbook
 
@@ -13,7 +10,7 @@ from openpyxl import load_workbook
 
 try:
     wb = load_workbook("SteamGames.xlsx")
-    ws = wb["Games"]
+    ws = wb["Sheet"]
     #ws = wb.active
     #wsList = wb.sheetnames
     #print("These are the sheets in your excel file:")
@@ -61,6 +58,7 @@ def exportToSheet(times):
         ws_cell.value = times[i]
         # ws.write(i,1,times[i])
     wb.save('SteamGameTimes_Finished.xlsx')
+    os.remove("SteamGames.xlsx")
     print("Exported to file successfully.")
     print("Refer to the README.txt in order to complete results.")
 
