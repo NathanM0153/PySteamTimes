@@ -77,6 +77,7 @@ def doctorOutput(gameList):
         i = i.replace(";"," ")
         i = i.replace("- ", "")
         i = i.replace("– ", "")
+        i = i.replace("'s", "s")
         
         string = ""
         for j in i: #removes everything in parentheses
