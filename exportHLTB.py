@@ -14,6 +14,7 @@ try:
     #ignore column B on second run
     wb = load_workbook("SteamGames.xlsx")
     ws = wb["Sheet"]
+    ws.delete_cols(2,3) #deletes 3 columns starting at B
     #ws = wb.active
     wsList = wb.sheetnames
     if len(wsList) > 1:

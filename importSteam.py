@@ -77,7 +77,9 @@ def doctorOutput(gameList):
         i = i.replace(";"," ")
         i = i.replace("- ", "")
         i = i.replace("– ", "")
-        i = i.replace("'s", "s")
+        i = i.replace("’", "'")
+        #i = i.replace("'s", "s")
+
         
         string = ""
         for j in i: #removes everything in parentheses
@@ -92,7 +94,7 @@ def doctorOutput(gameList):
         i = string
         
         if i[-1] == " ":
-            i = i[:-1] #cuts off if there is one
+            i = i[:-1] #cuts off extra space if there is one
             
         fixedList.append(i)
     return fixedList

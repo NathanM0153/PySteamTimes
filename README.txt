@@ -80,3 +80,6 @@ My Excel file was corrupted.
 bottom right. Click the down arrow next to Open, click Open and Repair, Extract Data, Convert to Values. Finally,
 go back to File -> Save As, and save the file as SteamGames.xlsx. You may have to change the drop down below the
 file name from .xls to .xlsx. After that, you can rerun the export script.
+
+
+If none of these answer your question, you are free to contact me on Discord at TM#7221 and I will help.
