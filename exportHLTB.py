@@ -43,6 +43,7 @@ def completion_time(game, playstyle):
         elif playstyle == 6:
             time = round((game.main_story + game.main_extra + game.completionist) / 3, 2)
         else:
+            print(playstyle)
             print("Should be impossible (completion_time)")
             sys.exit()
         return time
@@ -77,32 +78,63 @@ def getTimes(games):
               "If you would like multiple of the above, please re-run the script at the end.\n")
     try:
         x = int(x) #this only works if x is an int, filters input
+        if x < 1 or x > 6:
+            print("Invalid input.")
+            getTimes(games)            
     except:
         print("Invalid input.")
         getTimes(games)
 
+    global searchResults
+    searchResults = []
     for i in range(0, gameCount):
         gameSearch = searchforGame(games[i])
         # print(gameSearch)
+        searchResults.append(gameSearch)
         timeList.append(completion_time(gameSearch, x))
 
     return timeList
 
 def exportToSheet(times):
+    typeList = []
     y = input("Is this your first time running through this script? Y/N\n")
     if y == "N" or y == "n":
-        x = input("Select the Excel column you would like to put the times in. If you would like to enter in column C, please enter 3, etc.\n")
+        x = input("Select the Excel column you would like to put the times in. If you would like to enter in column C, please enter 3, etc. "
+                  "Please keep in mind that the game list is in column A and the first set of times created was put in column B.\n")
+        if x == "1":
+            z = input("Are you sure? This will overwrite your games. Y/N\n")
+            if z == "N" or z == "n":
+                exportToSheet(times)
+        multi = "N"
+        endless = "N"
     else:
         x = "2"
+        multi = input("Would you like to remove primarily multiplayer games? These are often given inflated completion times. Y/N\n")
+        endless = input("Would you like to remove games marked as endless? These are often given arbitrary completion times. Y/N\n")
+
     try:
         x = int(x)
+        if x < 1:
+            print("Invalid column input.")
+            exportToSheet(times) 
     except:
         print("Invalid column input.")
         exportToSheet(times)
+        
+        
+    ### Insert into Excel ###
     for i in range(0, len(times)):
-        ws_cell = ws.cell(row=i + 1, column=x)
+        ws_cell = ws.cell(row=i+1, column=x)
         ws_cell.value = times[i]
-        # ws.write(i,1,times[i])
+        typeList.append(searchResults[i].game_type)
+    wb.save('SteamGames.xlsx')
+
+    if (multi == "Y" or multi == "y"):
+        #find all rows, sort, reverse, then delete
+        for i in range(0,gameCount):
+            if typeList[i] == "
+    if endless == "Y" or endless == "y":     
+
     wb.save('SteamGames.xlsx')
     print("Exported to file successfully.")
     print("Refer to the README.txt in order to complete results.")
@@ -130,14 +162,6 @@ class HLTBSteam():
     def main():
         gameList = getGames()
         timeList = getTimes(gameList)
-        count = 1
-        #for i in range(0,gameCount):
-            #print(gameList[i], end=": ")
-            #time = timeList[i]
-            #if time == "Not found in HLTB database.":
-                #print(time)
-            #else:
-                #print(time, "hours")
         exportToSheet(timeList)
         return 0
 
