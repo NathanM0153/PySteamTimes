@@ -63,14 +63,14 @@ The game was not found on HowLongToBeat.
 
 - Most likely, the game name isn't exactly what it should be. If the program searches for "[Game] Definitive Edition" 
 it won't find "[Game]". This is an unfortunate quirk of HLTB's own search API. You will need to go into Excel and edit
-the name of the game if the cell in column B specifies it was not found in HLTB's database. It is also possible that
+the name of the game if the cell in the time column specifies it was not found in HLTB's database. It is also possible that
 HLTB does not have any record of the game whatsoever. If the hours are set to 0, HLTB correctly found the game in its
 database, but simply does not have any data on it.
 
 Other reasons this may occur:
 
 - The name is in another language
-- The program is searching for non-game software such as Borderless Gaming
+- The program is searching for non-game software such as Borderless Gaming or a soundtrack
 - Your internet is having problems
 
 ---

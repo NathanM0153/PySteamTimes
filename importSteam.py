@@ -1,6 +1,7 @@
 import time
 import steamfront
 #credit: https://github.com/4Kaylum/Steamfront
+import howlongtobeatpy
 
 from openpyxl import load_workbook
 from openpyxl import Workbook
@@ -9,6 +10,7 @@ from openpyxl import Workbook
 steamID64 = input("Enter your Steam ID64 key. This is the number at the end of your profile URL.\n")
 steamAPIKey = input("Enter your Steam API Key. After registering, you can find yours at this link: \nhttps://steamcommunity.com/dev/apikey\n")
 freebool = input("Include free games? Y/N\n")
+multibool = input("Include multiplayer games? Y/N\n")
 steamClient = steamfront.Client(steamAPIKey)
 waitTime = 1.3 #rate limit on steam api requests
 
@@ -69,8 +71,8 @@ def exportToExcel(gameList):
 
 def doctorOutput(gameList):
     fixedList = []
-    bracketbool = False
     string = ""
+    bracketbool = False
     for i in gameList:
         i = i.replace("™","")
         i = i.replace("®","")
@@ -78,9 +80,7 @@ def doctorOutput(gameList):
         i = i.replace("- ", "")
         i = i.replace("– ", "")
         i = i.replace("’", "'")
-        #i = i.replace("'s", "s")
 
-        
         string = ""
         for j in i: #removes everything in parentheses
             if j == '(':
