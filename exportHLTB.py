@@ -30,21 +30,23 @@ except Exception as e:
 # takes in JSON, returns completion time as int
 def completion_time(game, playstyle):
     if game is not None:
-        if playstyle == 1:
-            time = round(game.main_story, 2)
-        elif playstyle == 2:
-            time = round(game.main_extra, 2)
-        elif playstyle == 3:
-            time = round(game.completionist, 2)
-        elif playstyle == 4:
-            time = round((game.main_story + game.main_extra) / 2, 2)
-        elif playstyle == 5:
-            time = round((game.main_extra + game.completionist) / 2, 2)
-        elif playstyle == 6:
-            time = round((game.main_story + game.main_extra + game.completionist) / 3, 2)
-        else:
-            print(playstyle)
-            print("Should be impossible (completion_time)")
+        try:
+            if playstyle == 1:
+                time = round(game.main_story, 2)
+            elif playstyle == 2:
+                time = round(game.main_extra, 2)
+            elif playstyle == 3:
+                time = round(game.completionist, 2)
+            elif playstyle == 4:
+                time = round((game.main_story + game.main_extra) / 2, 2)
+            elif playstyle == 5:
+                time = round((game.main_extra + game.completionist) / 2, 2)
+            elif playstyle == 6:
+                time = round((game.main_story + game.main_extra + game.completionist) / 3, 2)
+            else:
+                print("Time not found")
+        except Exception as e:
+            print(e)
             sys.exit()
         return time
     else:
@@ -76,6 +78,7 @@ def getTimes(games):
               "5. Average of 2 and 3\n"
               "6. Average of all\n\n"
               "If you would like multiple of the above, please re-run the script at the end.\n")
+    print("")
     try:
         x = int(x) #this only works if x is an int, filters input
         if x < 1 or x > 6:
@@ -87,7 +90,7 @@ def getTimes(games):
 
     global searchResults
     searchResults = []
-    for i in range(0, gameCount):
+    for i in range(1, gameCount):
         gameSearch = searchforGame(games[i])
         # print(gameSearch)
         searchResults.append(gameSearch)
@@ -125,16 +128,26 @@ def exportToSheet(times):
     ### Insert into Excel ###
     for i in range(0, len(times)):
         ws_cell = ws.cell(row=i+1, column=x)
-        ws_cell.value = times[i]
+        ws_cell2 = ws.cell(row=i+1, column=x+1)
+        try:
+            ws_cell.value = times[i]
+            ws_cell2.value = searchResults[i].game_type
+        except Exception as e:
+            print(searchResults)
+            print(e)
+            ws_cell2.value = ""
         typeList.append(searchResults[i].game_type)
     wb.save('SteamGames.xlsx')
 
     if (multi == "Y" or multi == "y"):
         #find all rows, sort, reverse, then delete
-        for i in range(0,gameCount):
-            if typeList[i] == "
+        for i in range(1,gameCount):
+            if typeList[i] == "multi":
+                ws.delete_rows(i,1)
     if endless == "Y" or endless == "y":     
-
+        for i in range(1,gameCount):
+            if typeList[i] == "endless":
+                ws.delete_rows(i,1)
     wb.save('SteamGames.xlsx')
     print("Exported to file successfully.")
     print("Refer to the README.txt in order to complete results.")
