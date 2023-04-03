@@ -2,17 +2,14 @@ import sys
 import openpyxl
 import returnQuery #in working directory
 from pathlib import Path
-
+import glob
+import os
+            
 
 try:
-
-    print(Path.cwd())
-    #C:\Users\Nathan\Documents\PySteamTimer
-    
-    #search for xlsx files in directory and rename
-    wb = openpyxl.load_workbook("SteamGames.xlsx")
+    fileName = returnQuery.findFile()
+    wb = openpyxl.load_workbook(fileName)
     ws = wb["Sheet"]
-    #ws.delete_cols(2,3) #deletes 3 columns starting at B
     wsList = wb.sheetnames
     if len(wsList) > 1:
         print("These are the sheets in your excel file:")
@@ -32,80 +29,94 @@ except Exception as e:
     sys.exit()
 
 
-def exportToSheet(games, times, typeList):
-    y = input("Is this your first time running through this script? Y/N\n")
+
+    
+
+def exportToSheet(timeList, typeList):
+    y = "Y"#input("Is this your first time running through this script? Y/N\n")
     if y == "N" or y == "n":
-        x = input("Select the Excel column you would like to put the times in. If you would like to enter in column C, please enter 3, etc. "
+        #possibly delete rightmost column? idk if i'm keeping the genres or not
+        timeColumn = input("Select the Excel column you would like to put the times in. If you would like to enter in column C, please enter 3, etc. "
                   "Please keep in mind that the game list is in column A and the first set of times created was put in column B.\n")
-        if x == "1":
+        if timeColumn == "1":
             z = input("Are you sure? This will overwrite your games. Y/N\n")
             if z == "N" or z == "n":
-                exportToSheet(times)
+                exportToSheet(timeList, typeList)
+            elif z != "Y" or z != "y":
+                print("Invalid input.")
+                exportToSheet(timeList, typeList)
+        elif timeColumn == "2":
+            z = input("Are you sure? This will overwrite your times in column B. Y/N\n")
+            if z == "N" or z == "n":
+                exportToSheet(timeList, typeList)
+            elif z != "Y" or z != "y":
+                print("Invalid input.")
+                exportToSheet(timeList, typeList)
                 
         #if not first time, they already answered these questions, no need to ask again
         multi = "N"
         endless = "N"
-    else:
+    elif y == "Y" or y == "y":
         #defaults to column B
-        x = "2"
+        timeColumn = "2"
         multi = input("Would you like to remove primarily multiplayer games? These are often given inflated completion times. Y/N\n")
         endless = input("Would you like to remove games marked as endless? These are often given arbitrary completion times. Y/N\n")
-
-    #check if x input is integer
+    else:
+        print("Invalid input.")
+        exportToSheet(timeList, typeList)
+    #check if column input is integer
     try:
-        x = int(x)
-        if x < 1:
+        timeColumn = int(timeColumn)
+        if timeColumn < 1:
             print("Invalid column input.")
-            exportToSheet(times) 
+            exportToSheet(timeList) 
     except:
         print("Invalid column input.")
-        exportToSheet(times)
+        exportToSheet(timeList)
 
     try:
-        insert(times, x)
+        insert(typeList, timeList, timeColumn)
         delGenre(typeList, multi, endless)
         print("Exported to file successfully.")
         print("Refer to the README.txt in order to complete results.")
     except Exception as e:
+        print("Export not successful. Refer to the README for instructions.")
         print(e)
         sys.exit()
 
 
-def insert(times, x):
+def insert(typeList, times, col):
     ### Insert into Excel ###
     for i in range(0, len(times)):
-        ws_cell = ws.cell(row=i+1, column=x)
+        gameTime = ws.cell(row=i+1, column=col)
+        #gameType = ws.cell(row=i+1, column=col+1)
+        gameTime.value = times[i]
         #try:
-        ws_cell.value = times[i]
+        #    gameType.value = typeList[i]
         #except Exception as e:
-        #    print("test")
-        #    print(e)
-        #    typeList.append("")
-    return typeList
-            
+        #    gameType.value = ""
     wb.save('SteamGames.xlsx')
 
 def delGenre(typeList, multi, endless):
     if (multi == "Y" or multi == "y"):
-        #find all rows, sort, reverse, then delete
-        for i in range(1,gameCount):
+        #delete rows bottom to top or it'll get screwed up
+        for i in reversed(range(0,gameCount)):
             if typeList[i] == "multi":
-                ws.delete_rows(i,1)
+                ws.delete_rows(i+1,1)
     if endless == "Y" or endless == "y":     
-        for i in range(1,gameCount):
+        for i in reversed(range(0,gameCount)):
             if typeList[i] == "endless":
-                ws.delete_rows(i,1)
+                ws.delete_rows(i+1,1)
     wb.save('SteamGames.xlsx')
 
 
 class HLTBSteam():
     def main():
         gameList = returnQuery.getGames()
-        result = returnQuery.getTimes(gameList)
+        result = returnQuery.getTimes(gameList) #returns nested list
         timeList = result[0]
         typeList = result[1]
-        print("test 2")
-        exportToSheet(gameList, timeList, typeList)
+        exportToSheet(timeList, typeList)
         return 0
 
     if __name__ == "__main__":

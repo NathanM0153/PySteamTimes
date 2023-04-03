@@ -81,6 +81,7 @@ def doctorOutput(gameList):
         i = i.replace(";"," ")
         i = i.replace("- ", "")
         i = i.replace("– ", "")
+        i = i.replace("- ", "")
         i = i.replace("’", "'")
 
         string = ""

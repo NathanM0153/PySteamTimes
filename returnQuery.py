@@ -1,7 +1,9 @@
 import sys
 import openpyxl
-from os import listdir
-from os.path import isfile, join
+import os
+import glob
+#from os import listdir
+#from os.path import isfile, join
 from howlongtobeatpy import HowLongToBeat
 #credit: https://github.com/ScrappyCocco/HowLongToBeat-PythonAPI
 
@@ -12,9 +14,37 @@ from pathlib import Path
 #C:\Users\Nathan\Documents\PySteamTimer
 
 
+def findFile():
+    excelFilesinDir = []
+    cwd = Path.cwd()
+    os.chdir(cwd)
+    for i in glob.glob("*.xlsx"):
+        excelFilesinDir.append(i)
+    if len(excelFilesinDir) == 1:
+        return excelFilesinDir[0]
+    elif len(excelFilesinDir) == 0:
+        print("Please run importSteam.py first.")
+        sys.exit()
+    else:
+        print("Multiple .xlsx files detected:")
+        for i in range(0,len(excelFilesinDir)):
+            print(i+1, " ", excelFilesinDir[i])
+        x = input("Enter the listed number of the one you would like to use.\n")
+        try:
+            x = int(x)
+            if x < 1:
+                print("Invalid input.")
+                findFile()
+            print(excelFilesinDir[x-1], "selected.\n")
+            return excelFilesinDir[x-1]
+        except Exception as e:
+            print("Invalid input:", e)
+            findFile()
+
 try:
     #search for xlsx files in directory?
-    wb = openpyxl.load_workbook("SteamGames.xlsx")
+    #!!!
+    wb = openpyxl.load_workbook(findFile())
     ws = wb["Sheet"]
     wsList = wb.sheetnames
     gameCount = ws.max_row
