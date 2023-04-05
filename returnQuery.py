@@ -1,28 +1,21 @@
 import sys
 import openpyxl
 import os
-import glob
-#from os import listdir
-#from os.path import isfile, join
+import pathlib
+
+
 from howlongtobeatpy import HowLongToBeat
 #credit: https://github.com/ScrappyCocco/HowLongToBeat-PythonAPI
 
 
-
-from pathlib import Path
-#print(Path.cwd())
-#C:\Users\Nathan\Documents\PySteamTimer
-
-
 def findFile():
     excelFilesinDir = []
-    cwd = Path.cwd()
-    os.chdir(cwd)
-    for i in glob.glob("*.xlsx"):
-        excelFilesinDir.append(i)
-    if len(excelFilesinDir) == 1:
+    cwd = os.getcwd()
+    excelFilesinDir = list(pathlib.Path(cwd).glob('*.xlsx'))
+    #print(excelFilesinDir)
+    if len(excelFilesinDir) == 1: #only one file
         return excelFilesinDir[0]
-    elif len(excelFilesinDir) == 0:
+    elif len(excelFilesinDir) == 0: #no xlsx files, means user hasn't imported
         print("Please run importSteam.py first.")
         sys.exit()
     else:
@@ -36,31 +29,58 @@ def findFile():
                 print("Invalid input.")
                 findFile()
             print(excelFilesinDir[x-1], "selected.\n")
-            return excelFilesinDir[x-1]
+            global fileName
+            fileName = excelFilesinDir[x-1]
         except Exception as e:
-            print("Invalid input:", e)
+            print("Invalid input.")
+            #print(e)
             findFile()
+    #print(fileName)
+    return fileName
 
-try:
-    #search for xlsx files in directory?
-    #!!!
-    wb = openpyxl.load_workbook(findFile())
-    ws = wb["Sheet"]
-    wsList = wb.sheetnames
-    gameCount = ws.max_row
-except Exception as e:
-    print("A problem occurred:", e)
-    #print("If your error is not apparent, please check the README.txt file for assistance.")
-    sys.exit()
+def chooseSheet(wb):
+    sheets = wb.sheetnames
+    if len(sheets) == 1:
+        return wb.sheetnames[0]
+    else:
+        print("Multiple sheets detected in file:")
+        for i in range(0,len(sheets)):
+            print(i+1, " ", sheets[i])
+        x = input("Enter the listed number of the one you would like to use.\n")
+        try:
+            x = int(x)
+            if x < 1:
+                print("Invalid input.")
+                chooseSheet(wb)
+            elif x > len(sheets):
+                print("Invalid input.")
+                chooseSheet(wb)
+            print(sheets[x-1], "selected.\n")
+        except:
+            print("Invalid input (error).")
+            chooseSheet(wb)
+    return sheets[x-1]
+
+def loadWorkbook():
+    fileName = findFile()
+    wb = openpyxl.load_workbook(fileName)
+    sheet = chooseSheet(wb)
+    ws = wb[sheet]
+    #wsList = wb.sheetnames
+    #gameCount = ws.max_row
+    #except Exception as e:
+    #    print("A problem occurred:", e)
+        #print("If your error is not apparent, please check the README.txt file for assistance.")
+    #    sys.exit()
+    return [wb, ws, fileName]
 
 # pulls games from the excel sheet, puts in a list
-def getGames(): 
+def getGames(game_col): 
     gameList = []
-    first_col = list(ws['A'])
     #try and get first_col in here instead of the whole data file
     #print(rows)
     try:
-        for i in first_col:
+        for i in game_col:
             gameList.append(i.value)
     except Exception as e:
         print(e)
@@ -121,12 +141,10 @@ def getTimes(games):
 def searchResults(games, x):
     timeList = []
     typeList = []
-    #global searchResults
-    #searchResults = []
+    gameCount = len(games)
     for i in range(0, gameCount):
         gameSearch = searchforGame(games[i])
-        # print(gameSearch)
-        #searchResults.append(gameSearch)
+        #print(gameSearch)
         timeList.append(completion_time(gameSearch, x))
         try:
             typeList.append(gameSearch.game_type)
@@ -149,7 +167,3 @@ def searchforGame(name):
     else:
         print(name,  "NOT found. Check the README file for reasons this may be.")
         return None
-
-# takes in JSON, returns name of game as string
-def getName(game):
-    return game.game_name

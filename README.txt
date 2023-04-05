@@ -81,5 +81,9 @@ bottom right. Click the down arrow next to Open, click Open and Repair, Extract 
 go back to File -> Save As, and save the file as SteamGames.xlsx. You may have to change the drop down below the
 file name from .xls to .xlsx. After that, you can rerun the export script.
 
+My error isn't listed here.
+- Please try running the script again. Sometimes there are weird errors that I can't reproduce and disappear on the
+next time I try running it. If it persists after 2 or 3 tries, contact me.
+
 
 If none of these answer your question, you are free to contact me on Discord at TM#7221 and I will help.

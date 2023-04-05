@@ -18,7 +18,7 @@ def appIDList(games):
     IDList = []
     for i in games:
         IDList.append(i.appid)
-        #print(games[i].appid)
+        #print(i.appid)
     return IDList
 
 def gameNameList(IDList):
@@ -49,7 +49,7 @@ def gameNameList(IDList):
         print("Game IDs not found:")
         for i in errors:
             i = int(i)
-            print(i, end=" ")
+            print(i, end="\n")
 
         print("You can find them at https://steamcommunity.com/app/######, inserting the relevant ID.")
         print("Most of these will be game accessories or discontinued games, but there is a possibility the script missed a game so check if you would like.")
