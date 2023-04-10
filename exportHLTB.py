@@ -1,13 +1,10 @@
 import sys
 import openpyxl
 import returnQuery #in working directory
-from pathlib import Path
-import glob
-import os
+
             
 
-#try:
-para = returnQuery.loadWorkbook()
+para = returnQuery.loadWorkbook() #returns list of parameters
 wb = para[0]
 ws = para[1]
 fileName = para[2]
@@ -15,14 +12,9 @@ wsList = wb.sheetnames
 gameCount = ws.max_row
 typeList = []
 searchResult = [] 
-#except Exception as e:
-#    print("A problem occurred:", e)
-#    print("If your error is not apparent, please check the README.txt file for assistance.")
-#    sys.exit()
-
 
 def exportToSheet(timeList, typeList):
-    y = "Y"#input("Is this your first time running through this script? Y/N\n")
+    y = input("Is this your first time running through this script? Y/N\n")
     if y == "N" or y == "n":
         timeColumn = input("Select the Excel column you would like to put the times in. If you would like to enter in column C, please enter 3, etc. "
                           "Please keep in mind that the game list is in column A and the first set of times created was put in column B.\n")
@@ -30,14 +22,14 @@ def exportToSheet(timeList, typeList):
             z = input("Are you sure? This will overwrite your games. Y/N\n")
             if z == "N" or z == "n":
                 exportToSheet(timeList, typeList)
-            elif z != "Y" or z != "y":
+            elif z != "Y" and z != "y":
                 print("Invalid input.")
                 exportToSheet(timeList, typeList)
         elif timeColumn == "2":
             z = input("Are you sure? This will overwrite your times in column B. Y/N\n")
             if z == "N" or z == "n":
                 exportToSheet(timeList, typeList)
-            elif z != "Y" or z != "y":
+            elif z != "Y" and z != "y":
                 print("Invalid input.")
                 exportToSheet(timeList, typeList)
                 
@@ -47,8 +39,8 @@ def exportToSheet(timeList, typeList):
     elif y == "Y" or y == "y":
         #defaults to column B
         timeColumn = "2"
-        multi = input("\nWould you like to remove primarily multiplayer games? These are often given inflated completion times. Y/N\n")
-        endless = input("Would you like to remove games marked as endless? These are often given arbitrary completion times. Y/N\n")
+        #multi = input("\nWould you like to remove primarily multiplayer games? These are often given inflated completion times. Y/N\n")
+        #endless = input("Would you like to remove games marked as endless? These are often given arbitrary completion times. Y/N\n")
     else:
         print("Invalid input.")
         exportToSheet(timeList, typeList)
@@ -57,16 +49,16 @@ def exportToSheet(timeList, typeList):
         timeColumn = int(timeColumn)
         if timeColumn < 1:
             print("Invalid column input.")
-            exportToSheet(timeList) 
+            exportToSheet(timeList, typeList) 
     except:
         print("Invalid column input.")
-        exportToSheet(timeList)
+        exportToSheet(timeList, typeList)
 
     try:
         insertTime(typeList, timeList, timeColumn)
         #insertType(typeList, timelist, timeColumn)
-        delMulti(typeList, multi)
-        delEndless(typeList, endless)
+        #delMulti(typeList, multi)
+        #delEndless(typeList, endless)
         print("Exported to file successfully.")
         print("Refer to the README.txt in order to complete results.")
     except Exception as e:
@@ -82,7 +74,7 @@ def insertTime(typeList, times, col):
     wb.save(fileName)
 
 
-# currently unused
+# these currently unused
 def insertType(typeList, times, col):
     for i in range(0, len(times)):
         gameType = ws.cell(row=i+1, column=col+1)
@@ -92,8 +84,6 @@ def insertType(typeList, times, col):
             gameType.value = ""
     wb.save(fileName)
     
-#Games on HLTB are classified as "game", "dlc",
-#"compil" (compilation), "endless", and "multi"
 def delMulti(typeList, multi):
     if (multi == "Y" or multi == "y"):
         #delete rows bottom to top or the indexes get screwed up

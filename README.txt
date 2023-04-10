@@ -7,13 +7,16 @@ Libraries needed:
 - howlongtobeatpy
 
 Install these in Windows Powershell using the command:
+pip install [name of library]
+
+If for whatever reason that doesn't work, use this instead:
 python -m pip install [name of library]
 
 
 HOW TO RUN:
 
 OPTION 1:
-- Open Windows Powershell
+- Open Windows Powershell (or Linux terminal, if using Linux)
 - Navigate to your installation folder using this command
 cd [file path]
 
@@ -30,8 +33,25 @@ After completing the steps specified by the program, run this command:
 python exportHLTB.py
 
 
-
 OPTION 2:
+
+Windows:
+- Right-click on importSteam.py, click "Open with", then choose another app.
+- Navigate to your installation of Python, and check "Always use this app to open .py files"
+- By double clicking on any py file, it should automatically open and run the file on Command Prompt.
+
+Linux: 
+- Right-click on the .py file and select "Properties". 
+- In the "Open With" tab, select Python from the list of applications.
+- Click on "Set as default".
+
+
+This program will take several minutes to complete.
+
+After completing the steps specified by the program, double click on exportHLTB.py.
+
+
+OPTION 3:
 - Open IDLE, included with your installation of Python
 - Open importSteam.py under File
 - Run the script using Run -> Run Module

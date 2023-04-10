@@ -1,10 +1,8 @@
 import time
 import steamfront
 #credit: https://github.com/4Kaylum/Steamfront
-import howlongtobeatpy
-
-from openpyxl import load_workbook
 from openpyxl import Workbook
+
 
 
 steamID64 = input("Enter your Steam ID64 key. This is the number at the end of your profile URL.\n")
@@ -18,7 +16,6 @@ def appIDList(games):
     IDList = []
     for i in games:
         IDList.append(i.appid)
-        #print(i.appid)
     return IDList
 
 def gameNameList(IDList):
@@ -44,7 +41,6 @@ def gameNameList(IDList):
             errors.append(i)
             continue
         time.sleep(waitTime)
-        #would it be faster to go full speed until error then wait for longer?
     if len(errors) > 0:
         print("Game IDs not found:")
         for i in errors:
@@ -63,7 +59,6 @@ def exportToExcel(gameList):
     wb.save(file)
     gameList.sort()
     gameSheet = wb.active
-    #wb.remove("Sheet")
     for i in range(0,len(gameList)):
         gameSheet.cell(row=i+1, column=1, value=gameList[i])
     wb.save(file)
@@ -78,10 +73,8 @@ def doctorOutput(gameList):
     for i in gameList:
         i = i.replace("™","")
         i = i.replace("®","")
-        i = i.replace(";"," ")
-        i = i.replace("- ", "")
-        i = i.replace("– ", "")
-        i = i.replace("- ", "")
+        i = i.replace("–", "-") #en dash
+        i = i.replace("—", "-") #em dash
         i = i.replace("’", "'")
 
         string = ""

@@ -156,7 +156,12 @@ def searchResults(games, x):
 
 # takes in a string, returns a JSON result to be interpreted
 def searchforGame(name):
-    results = HowLongToBeat().search(name, similarity_case_sensitive=False)
+    try:
+        results = HowLongToBeat().search(name, similarity_case_sensitive=False)
+    except:
+        print("Internet connection required. Please check your "
+              "settings to ensure you have internet access.")
+        sys.exit()
     best_element = ""
     if results is not None and len(results) > 0:
         best_element = max(results, key=lambda element: element.similarity)
