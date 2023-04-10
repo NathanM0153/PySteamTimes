@@ -1,3 +1,10 @@
+Welcome to PySteamTimes! This program is meant to take all your games from Steam,
+put them in Excel, and then search HowLongToBeat.com for all of your games and put in 
+the times. I've written this README as if the user has zero experience with command
+line instructions. If that's you, don't worry! This shouldn't be too involved.
+If you have ideas for features, please contact me on Discord at TM#7221.
+
+
 Libraries needed:
 - aiohttp
 - requests
@@ -22,7 +29,7 @@ cd [file path]
 
 You can get your file path by clicking on the bar to the left of the search bar in File Explorer.
 For example:
-cd C:\Users\Admin\Documents\PySteamTimer
+cd C:\Users\Admin\Documents\PySteamTimes
 
 Once in the folder, run the following command:
 python importSteam.py
@@ -81,11 +88,11 @@ Many Steam App IDs in a row are not found.
 
 The game was not found on HowLongToBeat.
 
-- Most likely, the game name isn't exactly what it should be. If the program searches for "[Game] Definitive Edition" 
+- Most likely, the game name isn't exactly what it should be. If the program searches for "[Game] Definitive Edition"
 it won't find "[Game]". This is an unfortunate quirk of HLTB's own search API. You will need to go into Excel and edit
-the name of the game if the cell in the time column specifies it was not found in HLTB's database. It is also possible that
-HLTB does not have any record of the game whatsoever. If the hours are set to 0, HLTB correctly found the game in its
-database, but simply does not have any data on it.
+the name of the game if the cell in the time column specifies it was not found in HLTB's database. It is also possible
+that HLTB does not have any record of the game's existence whatsoever. If the hours are set to 0, HLTB correctly found
+the game in its database, but simply does not have any completion data on it.
 
 Other reasons this may occur:
 
@@ -98,8 +105,7 @@ Other reasons this may occur:
 My Excel file was corrupted.
 - Open Excel, go to File -> Open -> Browse. Single-click on SteamGames.xlsx, and navigate to the Open button on the
 bottom right. Click the down arrow next to Open, click Open and Repair, Extract Data, Convert to Values. Finally,
-go back to File -> Save As, and save the file as SteamGames.xlsx. You may have to change the drop down below the
-file name from .xls to .xlsx. After that, you can rerun the export script.
+go back to File -> Save As, and save the file. After that, you can rerun the export script.
 
 My error isn't listed here.
 - Please try running the script again. Sometimes there are weird errors that I can't reproduce and disappear on the

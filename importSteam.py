@@ -1,5 +1,6 @@
 import time
 import steamfront
+import sys
 #credit: https://github.com/4Kaylum/Steamfront
 from openpyxl import Workbook
 
@@ -14,9 +15,14 @@ waitTime = 1.3 #rate limit on steam api requests
 
 def appIDList(games):
     IDList = []
-    for i in games:
-        IDList.append(i.appid)
+    try:
+        for i in games:
+            IDList.append(i.appid)
+    except:
+        print("Internet connection required.")
+        sys.exit()
     return IDList
+        
 
 def gameNameList(IDList):
     games = []
@@ -75,6 +81,7 @@ def doctorOutput(gameList):
         i = i.replace("®","")
         i = i.replace("–", "-") #en dash
         i = i.replace("—", "-") #em dash
+        i = i.replace(" - ", " ")
         i = i.replace("’", "'")
 
         string = ""
@@ -102,8 +109,6 @@ class importSteam():
         user = steamClient.getUser(id64=steamID64)
         games = user.apps #list of <steamfront.userapp.UserApp object at 0x00000XXXXXXXXX>
         IDList = appIDList(games)
-        time = round(len(IDList) * waitTime / 60 + (len(IDList)/60/2.5), 1) #roughly 2.5 queries/second at max speed
-        print("This process is expected to take roughly", time, "minutes.")
         gameList = gameNameList(IDList)
         doctoredList = doctorOutput(gameList)
         exportToExcel(doctoredList)

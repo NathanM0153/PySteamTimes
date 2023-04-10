@@ -22,6 +22,7 @@ def findFile():
         print("Multiple .xlsx files detected:")
         for i in range(0,len(excelFilesinDir)):
             print(i+1, " ", excelFilesinDir[i])
+        print("If your list contains a file with ~$[file] as its name, please save and close Excel, this is a temporary file.")
         x = input("Enter the listed number of the one you would like to use.\n")
         try:
             x = int(x)
@@ -172,3 +173,13 @@ def searchforGame(name):
     else:
         print(name,  "NOT found. Check the README file for reasons this may be.")
         return None
+
+class returnQuery():
+
+    def main():
+        print("This file is not meant to be run. Please refer to the README.")
+        return 0
+    
+    if __name__ == "__main__":
+        main()
+
